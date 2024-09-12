@@ -1,9 +1,9 @@
-void setup() 
+void setup()
 {
-
+  
   for(int i=4;i<=11;i++)
   {
-    pinMode(i,OUTPUT);
+  	pinMode(i,OUTPUT);
   }
   
   pinMode(2,INPUT_PULLUP);
@@ -11,19 +11,29 @@ void setup()
   Serial.begin(9600);
 }
 
-void loop() 
+void loop()
 {
-  for(int i=4;i<=11;i++)
-  {
-    digitalWrite(i,HIGH);
-    delay(100);
+  
+  while(Serial.available() == 0);
+  int value = Serial.parseInt();
+  calculate(value);
+    
+}
+
+void calculate(int val){
+  
+  int dataArray[8] = {128,64,32,16,8,4,2,1};
+  int bitArray[8] = {0,0,0,0,0,0,0,0};
+  
+  for(int i = 0; i<8; i++){
+    bitArray[i] = val / dataArray[i];
+    val = val % dataArray[i];
   }
- 
-  for(int i=11;i>=4;i--)
-  {
-    digitalWrite(i,LOW);
-    delay(100);
+  int count = 4;
+  for(int i = 7; i>=0;i--){
+    digitalWrite(count,bitArray[i]);
+    count = count + 1;
   }
-  Serial.println(digitalRead(2));
-  Serial.println(digitalRead(3));
+
+  
 }
